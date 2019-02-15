@@ -34,14 +34,15 @@ function waitThenFetch(e) {
  */
 function fetchPredictions(event) {
   // if the word didn't changes, we shouldn't re-fetch the list (to avoid high load on the server)
-  if (word === getWordAtCaretPosition(event)) return
+  if (word === getWordAtCaretPosition(event)['value']) return
   word = getWordAtCaretPosition(event)
-  console.log(word)
   /** Here I'm using heroku cors to be able to fetch data without https
    * @link https://cors-anywhere.herokuapp.com/
    */
   const cors = 'https://cors-anywhere.herokuapp.com/'
-  const URL = `${cors}https://services.lingapps.dk/misc/getPredictions?locale=en-GB&text=${word}`
+  const URL = `${cors}https://services.lingapps.dk/misc/getPredictions?locale=en-GB&text=${
+    word.value
+  }`
   fetch(URL, {
     method: 'GET',
     headers: {
@@ -63,12 +64,11 @@ function fetchPredictions(event) {
  * after getting the position of cart, loop at characters starting from caret position
  * until finding a whitespace. Then get the word starting from this result
  * @param event Object
- * @returns String
+ * @returns Object
  */
 function getWordAtCaretPosition(event) {
   const writtenText = event.target.value // the text in textarea
   const caretPosition = event.target.selectionStart // the position of caret
-  console.log('caretPosition',caretPosition)
   let word = '' // the word that will be returned
   let wordPositionStart = 0 // the index of first letter at `word`
 
@@ -82,7 +82,7 @@ function getWordAtCaretPosition(event) {
     if (/\s/g.test(writtenText[i])) break
     word += writtenText[i]
   }
-  return word
+  return { value: word, position: wordPositionStart }
 }
 
 // -------------------------------------------------
@@ -107,10 +107,10 @@ function handlePredictions(predictionsArray, word) {
  * @param word String
  */
 function renderPredictions(predictionsList, word) {
-  predictionsDiv.innerHTML =
-    word.trim().length > 0 // trim whitespaces then check if there is a word
-      ? `<ol>${predictionsList.join('')}</ol>` // render as <ol> list
-      : '' // otherwise empty
+  const ol = document.createElement('ol')
+  predictionsList.forEach(li => ol.appendChild(li))
+  predictionsDiv.innerHTML = ''
+  predictionsDiv.appendChild(ol)
 }
 
 // -------------------------------------------------
@@ -118,10 +118,38 @@ function renderPredictions(predictionsList, word) {
  * render predictions list items
  * @param prediction Array
  * @param word String
- * @returns string
+ * @returns Element
  */
-const renderPredictionsListItem = (prediction, word) =>
-  `<li>${highlight(word, prediction)}</li>`
+const renderPredictionsListItem = (prediction, word) => {
+  const li = document.createElement('li')
+  li.className = 'prediction'
+  li.innerHTML = highlight(word.value, prediction)
+  // to access rendered elements we have to add the event listener to
+  // the rendered elements with vanilla js, but with jQuery we can use $('.prediction')
+  li.addEventListener('click', () =>
+    insertPredictionIntoTextarea(word, prediction)
+  )
+  return li
+}
+
+// -------------------------------------------------
+/**
+ * replace a word with another word in a string
+ */
+function replaceAt(string, word, replace) {
+  console.log(string, word, replace)
+  return (
+    string.substring(0, word.position) +
+    replace.toLowerCase() +
+    string.substring(word.position + word.value.length, string.length)
+  )
+}
+
+function insertPredictionIntoTextarea(word, prediction) {
+  let newTextareaContent = replaceAt(inputTextarea.value, word, prediction)
+  console.log(newTextareaContent)
+  inputTextarea.value = newTextareaContent
+}
 
 // -------------------------------------------------
 /**

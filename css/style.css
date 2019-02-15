@@ -113,4 +113,8 @@ body {
 .highlight {
   font-weight: bold; }
 
+.prediction:hover {
+  cursor: pointer;
+  text-decoration: underline; }
+
 /*# sourceMappingURL=style.css.map */
