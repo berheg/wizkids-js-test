@@ -39,7 +39,10 @@ function fetchPredictions(event) {
   /** Here I'm using heroku cors to be able to fetch data without https
    * @link https://cors-anywhere.herokuapp.com/
    */
-  const cors = 'https://cors-anywhere.herokuapp.com/'
+  let cors =
+    window.location.origin === 'https://zuhairtaha.github.io'
+      ? ''
+      : 'https://cors-anywhere.herokuapp.com/'
   const URL = `${cors}https://services.lingapps.dk/misc/getPredictions?locale=en-GB&text=${
     word.value
   }`
