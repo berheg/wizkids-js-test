@@ -7,6 +7,11 @@ $blue: #5264ae;
 $grey: #cecece;
 $grey-2: #888888;
 
+ul, li {
+  padding: 0;
+  margin: 0;
+}
+
 @mixin border-radius($radius) {
   border-radius: $radius;
 }
@@ -37,9 +42,11 @@ body {
     width: calc(100% - 24px);
     border: none;
     @include border-radius(3px);
+
     &:focus {
       outline: none;
     }
+
     &:focus ~ label,
     &:valid ~ label {
       top: -7px;
@@ -48,6 +55,7 @@ body {
       background: #fff;
       padding: 0 5px;
     }
+
     &:focus ~ .label {
       border: 2px solid $blue;
       @include border-radius(3px);
@@ -104,9 +112,11 @@ body {
       background: #fff;
       padding: 0 5px;
     }
+
     &:hover ~ .label {
       border: 1px solid;
     }
+
     &:focus ~ .label,
     &:active ~ .label,
     &:valid ~ .label {
@@ -153,7 +163,25 @@ body {
 .highlight {
   font-weight: bold;
 }
+
 .prediction:hover {
   cursor: pointer;
-  text-decoration: underline;
+  background: #eee;
+}
+
+#predictions {
+  border: solid 1px #eee;
+  display: inline-block;
+  border-radius: 5px;
+  background-color: #fdfdfd;
+
+  li {
+    border-bottom: solid 1px #eee;
+    list-style-type: none;
+    padding: .2rem 2rem;
+
+    .index-number {
+      margin-right: 1rem;
+    }
+  }
 }

@@ -1,3 +1,7 @@
+ul, li {
+  padding: 0;
+  margin: 0; }
+
 body {
   width: 500px;
   margin: 50px auto auto;
@@ -115,6 +119,18 @@ body {
 
 .prediction:hover {
   cursor: pointer;
-  text-decoration: underline; }
+  background: #eee; }
+
+#predictions {
+  border: solid 1px #eee;
+  display: inline-block;
+  border-radius: 5px;
+  background-color: #fdfdfd; }
+  #predictions li {
+    border-bottom: solid 1px #eee;
+    list-style-type: none;
+    padding: .2rem 2rem; }
+    #predictions li .index-number {
+      margin-right: 1rem; }
 
 /*# sourceMappingURL=style.css.map */
